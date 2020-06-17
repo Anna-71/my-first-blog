@@ -1,0 +1,30 @@
+body {background: #088;}
+
+header {
+ background: #0aa;
+ border-radius: 6px;
+ border: 6px solid #00a;
+}
+section {
+  background: #88f;
+  border-radius: 6px;
+  border: 6px solid #00a;
+  width: 30%;
+}
+
+h1, h4{
+font: "Helvetica, Arial, Sans-Serif, Cambria;
+color: #000;
+text-align: center;
+}
+
+header,
+section,
+aside,
+footer {
+  margin: 0 0 0 0;
+}
+
+div {
+
+}

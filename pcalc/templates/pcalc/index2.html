@@ -1,0 +1,69 @@
+<html lang="ru">
+
+<head>
+    <title>Пенсионный калькулятор</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+          
+</head>
+
+<body>
+   
+<header>      
+        <h1 class="mb-3">Пенсионный калькулятор</h1>
+</header>      
+
+<form class="needs-validation" novalidate="" method="POST">   
+ 	{% csrf_token %}
+    <div class="container">  
+        <div class="row">
+             <div class="col-md-4 mb-3">
+                  {{form.sex}}
+              </div>
+             <div class="col-md-4 mb-3">
+                  {{form.year_born}}
+             </div>
+             <div class="col-md-4 mb-3">
+                  {{form.year_begin}} 
+              </div>
+            </div>
+      </div>
+<div class="container">      
+<div class="row">
+       <div class="col-md-4">
+                 {{form.st01}}
+                 {{form.st91}}   
+                 {{form.szar2}}  
+	{{form.szar2}} 
+        </div>      
+       <div class="col-md-4">
+                 {{form.st14}}
+                 {{form.szar14}} 
+        </div>     
+        <div class="col-md-4">
+                  {{form.szar15}}  
+	
+        </div>                
+   </div>
+
+<div class="row">
+       <div class="col-md-6">
+                 {{form.army}}
+                 {{form.child}}   
+                 {{form.other}}  
+       </div>      
+       <div class="col-md-6">
+                 {{form.stn1}}
+                 {{form.stn2}} 
+	{{form.stl1}}
+                 {{form.stl2}} 
+        </div>     
+        
+  </div>
+</div>
+              
+</form>       
+
+
+
+</body>
+</html>

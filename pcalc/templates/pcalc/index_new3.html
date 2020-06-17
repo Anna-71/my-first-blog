@@ -1,0 +1,125 @@
+﻿{% load static %}
+<html lang="ru">
+
+<head>
+   <meta charset="chcp 1251">
+   <title> Пенсионный калькулятор </title>
+
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+<link rel="stylesheet" href="{% static 'css/pcalc.css' %}">
+</head>
+
+<body>
+   
+<header>  
+<h1>Пенсионный калькулятор</h1>
+<p class="par"> Наше приложение может рассчитать Вашу пенсию на основании предоставленных Вами данных</p>
+</header>      
+
+<form action ="{% url 'calc' %}"  method="POST">   
+   {% csrf_token %}
+  <div class="data_b container">  
+        <div class="row">
+             <div class="col-md-2">
+                <label>Укажите Ваш пол:   </label> {{form.sex}}
+              </div>
+             <div class="col-md-4">
+                <label>Введите год Вашего рождения:   </label>   {{form.year_born}}
+             </div>
+             <div class="col-md-6">
+                 <label> Введите год начала Вашей трудовой деятельности:   </label> {{form.year_begin}} 
+              </div>
+            </div>
+      </div>
+
+
+<div class= "data_b container">      
+         <div class="row">
+            <div class="col-md-12">
+                 <h4> Период до 2001 года </h4>
+                   Если Вам больше 40 лет, то у вас, вероятно, есть трудовой стаж за период до 2001 года. 
+                   Чтобы его учесть,  заполните, пожалуйста, следующие поля:
+            </div>
+       </div>
+       <div class="row">
+            <div class="col-md-6">
+            <label>Укажите Ваш стаж до 2001 года: </label>   {{form.ts01}} <input type="text" id="st01" >
+            </div>   
+            <div class="col-md-6">
+            <label>Укажите Ваш стаж до 1991 года:   </label>     {{form.ts91}} <input type="text" id="st91" >
+            </div>
+       </div>
+           <div class="row">
+           <div class="col-md-12">
+           <label>Укажите Ваш средний заработок за 5 лет :   </label>       {{form.szar5}}  
+           <label>  или за 2 года:   </label>  {{form.szar2}} 
+           </div>     
+       </div>      
+</div>
+<div class= "data_b container">      
+         <div class="row">
+            <div class="col-md-12"> 
+             <h4> Период до 2014 года </h4>
+                   Если Вам больше 30 лет, то у вас, вероятно, есть трудовой стаж за период до 2014 года. 
+                   Чтобы его учесть,  заполните, пожалуйста, следующие поля:
+            </div>
+        </div>
+       <div class="row">
+            <div class="col-md-6">
+            <label>Укажите Ваш стаж до 2014 года: </label>  {{form.ts14}} <input type="text" id="st91" >
+            </div>
+           <div class="col-md-6">
+                <label>Укажите Ваш средний заработок за этот период:    {{form.szar14}} 
+        </div>     
+      </div>
+   </div>     
+<div class= "data_b container">      
+         <div class="row">
+            <h4> Период c 2015 года </h4>   
+             <div class="col-md-4"> 
+              <label>Укажите Ваш средний заработок за этот период, если вы работали/планируете работать наемным работником: {{form.szar15}}  
+            </div>      
+           <div class="col-md-8"> 
+            Если вы работаете или планируете работать в качестве самозанятого гражданина, то укажите следующие данные: 
+           </div> 
+             <div class="col-md-4"> 
+             <label> Сколько лет Вы плпнируете как самозанятый гражданин:  </label> <input type="text" id="sams" >
+             </div>
+             <div class="col-md-4"> 
+             <label> Сколько лет Вы плпнируете как самозанятый гражданин:  </label> <input type="text" id="sams" >
+           </div>           
+   </div>
+</div>
+<div class= "data_b container">     
+<div class="row">
+       <div class="col-md-12">
+                 <label> Укажите сколько лет Вы проходили или планируете проходить службу по призыву:   </lable> {{form.army}}
+      </div>          
+                 <div class="col-md-12">            
+                 <label> Укажите сколько детей Вы имеете/планируете иметь </lable> {{form.child}}   
+                 <label> Укажите сколько лет Вы осуществляли уход за индалидами 1 группы,
+                    ребёнком-инвалидом, лицами старше 80 лет и при этом не работали: </lable>  {{form.other}} 
+       </div> 
+      </div> 
+ </div> 
+       
+<div class= "data_b container">     
+<div class="row">
+      <div class="col-md-12">
+            <label> Укажите сколько лет Вы работали в районах Крайнего Севера:   </lable> {{form.stn1}}     
+            <label> Укажите сколько лет Вы работали в прирасненных к районам Крайнего Севера:   </lable>     {{form.stn2}} 
+            <label> Укажите сколько лет Вы на произвозствах, включенный в первый список:   </lable> {{form.stl1}}
+            <label> Укажите сколько лет Вы на произвозствах, включенный во второй список:   </lable>    {{form.stl2}} 
+        </div>     
+        
+  </div>
+</div>
+  
+<hr class="mb-4">
+  <button class="text-white font-weight-bold display-4"style='background-color: #5f8e8e; border-radius: 50px; height: 70px; width: 50%;' type="submit">Рассчитать</button>
+   
+</form>       
+
+</body>
+</html>
