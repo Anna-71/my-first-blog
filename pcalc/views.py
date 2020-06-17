@@ -5,14 +5,11 @@ from .forms import Pcalc_infoForm
 from .apps import PcalcConfig
 
 def index(request): 
-    #info = Pcalc_info.objects.last()
-
     form = Pcalc_infoForm()   
-    #return render(request, 'pcalc/index_new2.html',{'info': info, 'form':form})
-    return render(request, 'pcalc/index_new2.html',{'form':form})
+    return render(request, 'pcalc/data_form.html',{'form':form})
 
 def calc(request): 
-    submitbutton= request.POST.get("submit")
+    request.POST.get("submit")
     m=''
     y1=''
     y2=''
@@ -43,10 +40,11 @@ def calc(request):
             ap=(61,56) # пенсионный возраст на 2020 год
             apl=(50,45) # льготный пенсионный возраст по 1-му списку
             kyl=(1970,1975) # граничные года рождения по 1-му списку
-            ky=((1956,1964),(1962,1967)) # граничные года рождения,
+            ky=((1959,1964),(1962,1967)) # граничные года рождения,
                  #попадающие в переходный период увеличения пенс. возраста
             y=int(y1)
             m=int(s)
+            year=2020
             lg=[0,0,0,0,0] # флаги наличия льгот: северные (i=0,1), сельхоз (i=2), вредные производства(i=3,4)
             # извлекаем информацию о льготах по вредным спискам.
             temp1=''
@@ -70,7 +68,7 @@ def calc(request):
                         mess2="Год выхода на пенсию " + str(year)
             else:
                 if y<ky[0][m]: mess="Люди этого возраста уже вышли на пенсию!"
-                elif y>ky[0][m] and y<ky[1][m]:
+                elif y>=ky[0][m] and y<=ky[1][m]:
                     mess="Возраст выхода на пенсию - "+str(ap[m]+y-ky[0][m])+" лет/года"
                     year=2020+2*(y-ky[0][m])  
                     mess2="Год выхода на пенсию " + str(year)
@@ -84,23 +82,27 @@ def calc(request):
             temp2=''
             temp2=form.cleaned_data.get("sam")
             temp3 =form.cleaned_data.get("ssam") 
-            p3=(st_15,int(temp1),int(temp2),int(temp3))# данные периода с 2015
+           
             # льготные баллы
-            temp1=''
-            temp1=form.cleaned_data.get("army")
+            st1=''
+            st1=form.cleaned_data.get("army")
+            st_15-=float(st1) # вычитаем из стажа годы службы
             db=0
-            db+=float(temp1)*1.8; # доп. баллы за армию
-            temp1=''
-            temp1=form.cleaned_data.get("child")
-            ch=min(int(temp1),4)
+            db+=float(st1)*1.8; # доп. баллы за армию
+            st1=''
+            st1=form.cleaned_data.get("child")
+            ch=min(int(st1),4)
+            st_15-=ch*1.5 # вычитаем из стажа годы ухода за детьми
             if ch>0:
                 for i in range(1, ch+1):
                     koef=min(i,3)   # за 4-го ребенка баллов как за третьего
                     db+=koef*1.8*1.5           # доп. баллы за детей
                 
-            temp1=''
-            temp1=form.cleaned_data.get("other")
-            db+=float(temp1)*1.8; # доп. баллы за уход
+            st1=''
+            st1=form.cleaned_data.get("other")
+            st_15-=float(st1) # вычитаем из стажа годы ухода за инвалидами и лицами старше 80 лет
+            p3=(st_15,int(temp1),int(temp2),int(temp3))# данные периода с 2015
+            db+=float(st1)*1.8; # доп. баллы за уход
             db=round(db,2)
             # извлекаем информацию о северных и селхоз льготах
             temp1=''
@@ -114,12 +116,17 @@ def calc(request):
             if int(temp1)>=30: lg[2]=1
             p=0
             pb=0
+            stag=0
+            mess3=""
             if mess2:    
                 pensia_info=PcalcConfig.calc_pension(p1,p2,p3,year,db,lg,m)
                 pb= round(pensia_info[0],1) # пенсионные баллы
                 p = round(pensia_info[1],2) # размер пенсии
-            context= {'form': form, 'mess': mess, 'mess2': mess2, 'pb': pb,'p':p,'db': db }
-            return render(request, 'pcalc/index1.html',context) 
+                stag = round(pensia_info[2],1)# общий трудовой/страховой стаж
+                mess3= pensia_info[3]  # информация о невыполнении условий назначения пенсии (недостаточный стаж и/или мало пенсионных баллов)
+            
+            context= {'form': form, 'mess': mess, 'mess2': mess2, 'pb': pb,'p':p,'db': db, 'stag': stag,'mess3': mess3}
+            return render(request, 'pcalc/resalt.html',context) 
 
         else:
             return HttpResponseNotAllowed(['POST'])
